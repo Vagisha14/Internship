@@ -1,1 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Refresh Opportunity Scoring</title>
 
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 1000px;
+            margin: auto;
+            padding: 30px;
+            color: #222;
+            background: #f7f7f7;
+        }
+
+        header, section {
+            background: white;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+
+        h1 {
+            margin-top: 0;
+        }
+
+        h2 {
+            margin-top: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background: #eee;
+        }
+
+        .result {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .note {
+            background: #f0f0f0;
+            padding: 15px;
+            border-left: 4px solid #555;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>Content Refresh Opportunity Scoring</h1>
+
+    <p>
+        A machine learning approach for prioritizing content pages
+        that may deserve refresh or further human review.
+    </p>
+
+    <p>
+        <strong>Project type:</strong> Content Opportunity Scoring
+    </p>
+</header>
+
+
+<section>
+    <h2>1. Research Question</h2>
+
+    <p>
+        Can search-performance, engagement, freshness, and content-related
+        signals be used to prioritize content refresh opportunities, and
+        does a Random Forest model provide useful improvement over a
+        Week-4 baseline?
+    </p>
+
+    <p>
+        The objective is to create a decision-support ranking that helps
+        content teams identify pages that deserve manual review.
+    </p>
+</section>
+
+
+<section>
+    <h2>2. Data</h2>
+
+    <p>
+        The analysis uses the anonymized content refresh dataset.
+        The dataset contains content, search, traffic, engagement,
+        freshness, and trend-related features.
+    </p>
+
+    <p>Important signals include:</p>
+
+    <ul>
+        <li>Search volume and competition</li>
+        <li>Impressions and clicks</li>
+        <li>CTR and average position</li>
+        <li>Sessions and engagement rate</li>
+        <li>Content age and days since last update</li>
+        <li>Recent versus previous performance</li>
+        <li>AI traffic percentage</li>
+        <li>Performance trend percentage</li>
+    </ul>
+</section>
+
+
+<section>
+    <h2>3. Methodology</h2>
+
+    <p>
+        A Random Forest regression model was selected because the dataset
+        contains multiple numerical content-performance signals that can
+        interact in non-linear ways.
+    </p>
+
+    <p>
+        The Week-4 baseline provides a reference ranking. The Random Forest
+        model was then evaluated using held-out data. Identifier fields,
+        precomputed tier fields, and other potentially leakage-prone
+        fields were excluded from the model feature set.
+    </p>
+
+    <p>
+        The workflow included preprocessing, feature selection, model
+        training, baseline comparison, honest-split validation, and a
+        leakage audit.
+    </p>
+</section>
+
+
+<section>
+    <h2>4. Results vs Baseline</h2>
+
+    <p>
+        The following results were obtained during the model evaluation.
+    </p>
+
+    <table>
+        <tr>
+            <th>Method</th>
+            <th>MAE</th>
+            <th>RMSE</th>
+        </tr>
+
+        <tr>
+            <td>Week-4 Baseline</td>
+            <td>0.133717</td>
+            <td>0.164044</td>
+        </tr>
+
+        <tr>
+            <td>Random Forest Model</td>
+            <td>0.0051</td>
+            <td>0.0089</td>
+        </tr>
+    </table>
+
+    <p class="result">
+        Random Forest MAE: 0.0051
+    </p>
+
+    <p class="result">
+        Random Forest RMSE: 0.0089
+    </p>
+
+    <div class="note">
+        The Random Forest produced lower prediction error than the
+        Week-4 baseline under the reported evaluation setup. This
+        indicates better predictive accuracy on the evaluation data,
+        but it does not prove that refreshing content will improve
+        future performance.
+    </div>
+</section>
+
+
+<section>
+    <h2>5. Validation and Leakage Audit</h2>
+
+    <p>
+        An honest holdout evaluation was performed to check how the model
+        behaves when evaluated on observations separated from the training
+        data.
+    </p>
+
+    <p>
+        The validation workflow also checked for identifiers, precomputed
+        recommendation fields, tier fields, and other features that could
+        introduce leakage.
+    </p>
+
+    <p>
+        The model outputs should therefore be treated as prioritization
+        signals rather than guaranteed predictions.
+    </p>
+</section>
+
+
+<section>
+    <h2>6. Ranked Recommendations</h2>
+
+    <p>
+        The system produces a ranked queue of content opportunities.
+        Each recommendation includes a score, a recommended action,
+        and a reason code.
+    </p>
+
+    <p>
+        The Top-20 recommendations generated by the Week-4 baseline
+        are used as the initial decision-support queue.
+    </p>
+
+    <p>
+        These rankings are intended to help content teams focus their
+        attention on pages that may deserve further investigation.
+    </p>
+</section>
+
+
+<section>
+    <h2>7. Intended Use and Human Review</h2>
+
+    <p>
+        The scoring system is intended to support content teams in
+        prioritizing pages for manual review.
+    </p>
+
+    <p>
+        Human review is required before acting on any recommendation.
+        A high score does not guarantee that a content refresh will
+        improve performance.
+    </p>
+
+    <h3>No-Go List</h3>
+
+    <ul>
+        <li>Do not automatically publish or modify content based only on the score.</li>
+        <li>Do not treat a high score as proof of future performance improvement.</li>
+        <li>Do not use unreliable or clearly incorrect data.</li>
+        <li>Do not use the model as the sole basis for deleting content.</li>
+        <li>Do not claim causation without controlled testing.</li>
+    </ul>
+</section>
+
+
+<section>
+    <h2>8. Monitoring and Retraining</h2>
+
+    <p>
+        The system should be monitored as new data becomes available.
+        Monitoring should include data quality, feature drift, ranking
+        stability, model performance, and comparison with the baseline.
+    </p>
+
+    <p>
+        Retraining should be considered when model performance declines,
+        feature distributions change substantially, ranking quality becomes
+        unstable, or the model no longer provides useful value compared
+        with the baseline.
+    </p>
+</section>
+
+
+<section>
+    <h2>9. Limitations</h2>
+
+    <ul>
+        <li>The analysis depends on the quality and coverage of the available data.</li>
+        <li>Historical patterns may not represent future search behavior.</li>
+        <li>The model does not establish causal relationships.</li>
+        <li>Model scores do not guarantee successful content refreshes.</li>
+        <li>Human review remains necessary before taking action.</li>
+    </ul>
+</section>
+
+
+<section>
+    <h2>10. Conclusion</h2>
+
+    <p>
+        This project developed a content opportunity scoring workflow
+        combining a Week-4 baseline with a Random Forest model.
+        The Random Forest achieved lower MAE and RMSE than the baseline
+        under the reported evaluation setup.
+    </p>
+
+    <p>
+        The resulting system is best viewed as a decision-support tool
+        that helps prioritize content for human review. Further testing
+        on new observations would be required to determine whether the
+        approach generalizes and whether recommended content refreshes
+        produce measurable business improvements.
+    </p>
+</section>
+
+
+</body>
+</html>
